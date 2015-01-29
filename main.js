@@ -1,14 +1,31 @@
 $(function(){
-    /**
-    * TODO: cache this?
-    */
-
     var allRepos = [];
     var allPrs = [];
     var api_key = "";
+    var templateData;
 
-    $(document).ajaxStop(processData); // for when we're done
-    $.get("https://api.github.com/orgs/adaptlearning/repos" + api_key, {}, getData);
+    init();
+
+    function init() {
+        storeTemplateData();
+
+        // get going when the data's here
+        $(document).ajaxStop(processData);
+
+        $.get("https://api.github.com/rate_limit" + api_key, {}, setApiInfo);
+        $.get("https://api.github.com/orgs/adaptlearning/repos" + api_key, {}, getData);
+    }
+
+    function setApiInfo(data){
+        $(".api_limit").html(
+            "API calls left: " + data.rate.remaining + "/" + data.rate.limit
+        );
+    }
+
+    function storeTemplateData() {
+        templateData = Handlebars.compile($(".template").html());
+        $(".template").remove();
+    }
 
     function getData(repos) {
         allRepos = repos;
@@ -25,45 +42,17 @@ $(function(){
             for(var j = 0, length = allPrs.length; j < length; j++) {
                 if(allPrs[j][0].base.repo.id == allRepos[i].id) {
                     allRepos[i].pull_requests = allPrs[j];
-                    allRepos[i].plus_ones = 3;
                 }
             }
         }
-
         render();
     }
 
     function render() {
         $(".loading").addClass("hidden");
-        $(".inner").fadeIn();
+        $(".inner").fadeIn().removeClass("hidden");
 
-        for(var i = 0, length = allRepos.length; i < length; i++) {
-            var repo = allRepos[i];
-            if(repo.pull_requests) renderRepo(repo);
-        }
-    }
-
-    function renderRepo(repo) {
-        var htmlData = "";
-
-        htmlData += "<div class='repo " + repo.name + "'>";
-            htmlData += "<div class='title'>";
-                htmlData += "<h3>" + repo.name + "</h3>";
-            htmlData += "</div>";
-
-        for(var j = 0, count = repo.pull_requests.length; j < count; j++) {
-            var pr = repo.pull_requests[j];
-            htmlData += "<a href='" + pr.html_url + "' target='_blank'>";
-                htmlData += "<div class='pr'>";
-                    htmlData += "<div class='title'>" + pr.title + " (#" + pr.number + ")</div>";
-                    htmlData += "<a href='" + pr.user.html_url + "' target='_blank'>";
-                        htmlData += "<div class='author'>" + pr.user.login + "</div>";
-                    htmlData += "</a>";
-                htmlData += "</div>";
-            htmlData += "</a>";
-        }
-        htmlData += "</div>"
-
-        $(".content").append(htmlData);
+        var html = templateData({ repos: allRepos });
+        $(".content").append(html);
     }
 });

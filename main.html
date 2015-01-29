@@ -1,9 +1,10 @@
 <!doctype html>
 <head>
     <title>Adapt Learning Pull Requests</title>
-    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500' rel='stylesheet' type='text/css'>
     <link href="style.css" type="text/css" rel="stylesheet"/>
-    <script src="//code.jquery.com/jquery-1.11.2.min.js" type="text/javascript" language="javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript" language="javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js" type="text/javascript" language="javascript"></script>
     <script src="main.js" type="text/javascript" language="javascript"></script>
 </head>
 <body>
@@ -18,8 +19,37 @@
                 <h1>Adapt Learning Pull Requests</h1>
             </div>
         </a>
-        <div class="content">
-        </div>
+        <div class="content"></div>
+        <div class="api_limit"></div>
+
+        <div class="template"> <!-- Handlebars template data (start) -->
+            <div class="repos">
+                {{#each this.repos}}
+                    {{#if this.pull_requests}}
+                        <div class='repo {{name}}'>
+                            <a href='{{html_url}}' target='_blank'>
+                                <div class='repo_title'>
+                                    <h3>{{name}}</h3>
+                                </div>
+                                <div class="prs">
+                                    {{#each this.pull_requests}}
+                                        <div class='pr'>
+                                            <a href='{{html_url}}' target='_blank'>
+                                                <div class='pr_title'>{{title}} (#{{number}})</div>
+                                                <div class='pr_author'>
+                                                    <a href='{{user.html_url}}' target='_blank'>{{user.login}}</a>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {{/each}}
+                                </div>
+                            </a>
+                        </div>
+                    {{/if}}
+                {{/each}}
+            </div>
+        </div> <!-- Handlebars template data (end) -->
+
     </div>
 </body>
 </html>

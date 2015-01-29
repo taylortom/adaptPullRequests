@@ -10,21 +10,19 @@ $(function(){
         storeTemplateData();
 
         // get going when the data's here
-        $(document).ajaxStop(processData);
+        $(document).ajaxStop(matchPrsToRepos);
 
         $.get("https://api.github.com/rate_limit" + api_key, {}, setApiInfo);
         $.get("https://api.github.com/orgs/adaptlearning/repos" + api_key, {}, getData);
     }
 
-    function setApiInfo(data){
-        $(".api_limit").html(
-            "API calls left: " + data.rate.remaining + "/" + data.rate.limit
-        );
-    }
-
     function storeTemplateData() {
         templateData = Handlebars.compile($(".template").html());
         $(".template").remove();
+    }
+
+    function setApiInfo(data){
+        $(".api_limit").html("API calls left: " + data.rate.remaining + "/" + data.rate.limit);
     }
 
     function getData(repos) {
@@ -37,7 +35,7 @@ $(function(){
         }
     }
 
-    function processData() {
+    function matchPrsToRepos() {
         for(var i = 0, length = allRepos.length; i < length; i++) {
             for(var j = 0, length = allPrs.length; j < length; j++) {
                 if(allPrs[j][0].base.repo.id == allRepos[i].id) {

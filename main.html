@@ -10,17 +10,19 @@
 <body>
     <div class="loading">
         <div class="spinner">
-            <img src="favicon.png">
+            <img src="logo.png">
         </div>
     </div>
     <div class="inner hidden">
-        <a href="https://github.com/search?o=desc&q=user%3Aadaptlearning+is%3Apr&s=updated&type=Issues&utf8=%E2%9C%93" target="_blank">
+        <a href="https://github.com/pulls?user=adaptlearning" target="_blank">
             <div class="header">
                 <h1>Adapt Learning Pull Requests</h1>
             </div>
         </a>
+        <div class="outstanding_prs">There are currently <div class="number"></div> pull requests outstanding.</div>
         <div class="content"></div>
         <div class="api_limit"></div>
+        <div class="footer">Coded by <a href="https://github.com/taylortom">@taylortom</a></div>
 
         <div class="template"> <!-- Handlebars template data (start) -->
 
@@ -32,19 +34,20 @@
                                 <div class='repo_title'>
                                     <h3>{{name}}</h3>
                                 </div>
-                                <div class="prs">
-                                    {{#each this.pull_requests}}
-                                        <div class='pr'>
-                                            <a href='{{html_url}}' target='_blank'>
-                                                <div class='pr_title'>{{title}} (#{{number}})</div>
-                                                <div class='pr_author'>
-                                                    <a href='{{user.html_url}}' target='_blank'>{{user.login}}</a>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    {{/each}}
-                                </div>
                             </a>
+                            <div class='min'><a href="#">toggle</a></div>
+                            <div class="prs">
+                                {{#each this.pull_requests}}
+                                    <div class='pr'>
+                                        <a href='{{html_url}}' target='_blank'>
+                                            <div class='pr_title'>{{title}} (#{{number}})</div>
+                                            <div class='pr_author'>
+                                                <a href='{{user.html_url}}' target='_blank'>{{user.login}}</a>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {{/each}}
+                            </div>
                         </div>
                     {{/if}}
                 {{/each}}

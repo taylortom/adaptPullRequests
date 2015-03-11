@@ -56,6 +56,10 @@ body > .inner {
     margin: 0 auto;
 }
 
+.today {
+    padding-bottom: 30px;
+}
+
 .repo {
 }
 
@@ -70,7 +74,7 @@ body > .inner {
     background-color: #009CCB;
 }
 
-.repo_title {
+.blue_title {
     background-color: #009CCB;
     padding: 10px 10px 0px 10px;
     margin-bottom: 10px;
@@ -95,6 +99,12 @@ body > .inner {
     padding-right: 7px;
 }
 
+.pr_time {
+    display: inline-block;
+    padding-right: 7px;
+    color: #009CCB;
+}
+
 .pr_author {
     display: inline-block;
     color: #009CCB;
@@ -114,6 +124,15 @@ body > .inner {
 
 .content {
     margin-bottom: 50px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.footer a {
+    color: #009CCB;
 }
 
 @-webkit-keyframes rotateplane {

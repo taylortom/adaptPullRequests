@@ -26,12 +26,32 @@
 
         <div class="template"> <!-- Handlebars template data (start) -->
 
+            <div class="today">
+                <a href='{{html_url}}' target='_blank'>
+                    <div class='blue_title'>
+                        <h3>Today's Updates</h3>
+                    </div>
+                </a>
+                {{#each this.today}}
+                    <div class='pr'>
+                        <a href='{{html_url}}' target='_blank'>
+                            <div class='pr_time'>{{last_updated_formatted}}</div>
+                            <div class='pr_title'>{{title}} (#{{number}})</div>
+                            <div class='pr_author'>
+                                <a href='{{user.html_url}}' target='_blank'>{{user.login}}</a>
+                            </div>
+                        </a>
+                    </div>
+                {{/each}}
+            </div>
+
+
             <div class="repos">
                 {{#each this.repos}}
                     {{#if this.pull_requests}}
                         <div class='repo {{name}}'>
                             <a href='{{html_url}}' target='_blank'>
-                                <div class='repo_title'>
+                                <div class='blue_title'>
                                     <h3>{{name}}</h3>
                                 </div>
                             </a>

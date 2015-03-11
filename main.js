@@ -1,6 +1,7 @@
 $(function(){
     var allRepos = [];
     var allPrs = [];
+    var todaysPrs = [];
     var ajaxQueue = 0;
     var api_key = "";
     var templateData;
@@ -48,7 +49,14 @@ $(function(){
         for(var i = 0, length = allRepos.length; i < length; i++) {
             var pullsURL = allRepos[i].pulls_url.substr(0,allRepos[i].pulls_url.length-9);
             $.get(pullsURL + api_key, {}, function(prs){
-                if(prs.length > 0) allPrs.push(prs);
+                if(prs.length > 0)  {
+                    allPrs = allPrs.concat(prs);
+                    for(var i = 0, length = allRepos.length; i < length; i++) {
+                        if(prs[0].base.repo.id === allRepos[i].id) {
+                            allRepos[i].pull_requests = prs;
+                        }
+                    }
+                }
             });
         }
     }
@@ -59,14 +67,22 @@ $(function(){
             if(a.name > b.name) return 1;
             return 0;
         });
-    }
 
-    function matchPrsToRepos() {
-        for(var i = 0, length = allRepos.length; i < length; i++) {
-            for(var j = 0, length2 = allPrs.length; j < length2; j++) {
-                if(allPrs[j][0].base.repo.id === allRepos[i].id) {
-                    allRepos[i].pull_requests = allPrs[j];
-                }
+        allPrs = allPrs.sort(function(a,b) {
+            if(a.updated_at < b.updated_at) return 1;
+            if(a.updated_at > b.updated_at) return -1;
+            return 0;
+        });
+
+        for(var i = 0, len = allPrs.length; i < len; i++) {
+            // today at midnight
+            var today = new Date(); today.setHours(0); today.setMinutes(0).toString;
+            var d = new Date(allPrs[i].updated_at);
+            if(d > today) {
+                todaysPrs.push(allPrs[i]);
+                var hours = (d.getHours() < 10) ? ("0" + d.getHours()) : d.getHours();
+                var mins = (d.getMinutes() < 10) ? ("0" + d.getMinutes()) : d.getMinutes();
+                allPrs[i].last_updated_formatted = hours + ":" + mins;
             }
         }
     }
@@ -79,18 +95,14 @@ $(function(){
     }
 
     function render() {
-        var remaining = 0;
-        for(var i = 0, length = allPrs.length; i < length; i++) {
-            remaining += allPrs[i].length;
-        }
-
+        var remaining = allPrs.length;
         if(remaining == 0) remaining = "no"
         $(".outstanding_prs .number").html(remaining);
 
         $(".loading").addClass("hidden");
         $(".inner").fadeIn().removeClass("hidden");
 
-        var html = templateData({ repos: allRepos });
+        var html = templateData({ repos: allRepos, today: todaysPrs });
         $(".content").append(html);
 
         setupListeners();
@@ -106,7 +118,6 @@ $(function(){
     // events
 
     function onAjaxStop() {
-        matchPrsToRepos();
         sortData();
         render();
     }

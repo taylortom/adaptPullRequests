@@ -5,6 +5,8 @@ $(function(){
     var ajaxQueue = 0;
     var api_key = "";
     var templateData;
+    var showPrs = true;
+    var showRepos = true;
 
     init();
 
@@ -96,14 +98,20 @@ $(function(){
 
     function render() {
         var remaining = allPrs.length;
-        if(remaining == 0) remaining = "no"
+        if(remaining == 0) remaining = "no";
         $(".outstanding_prs .number").html(remaining);
 
         $(".loading").addClass("hidden");
         $(".inner").fadeIn().removeClass("hidden");
 
-        var html = templateData({ repos: allRepos, today: todaysPrs });
+        var model = {};
+        if(showPrs) model.prs = allPrs;
+        if(showRepos) model.repos = allRepos;
+        if(todaysPrs.length > 0) model.today = todaysPrs;
+
+        var html = templateData(model);
         $(".content").append(html);
+        $(".prs.all").slideUp(1);
 
         setupListeners();
     }

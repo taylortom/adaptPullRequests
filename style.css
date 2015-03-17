@@ -63,7 +63,7 @@ body > .inner {
 .repo {
 }
 
-.repo > .min {
+.min {
     display: inline-block;
     color: white;
     opacity: 0.4;

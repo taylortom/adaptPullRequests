@@ -1,4 +1,5 @@
 $(function(){
+    var AUTHORING_TOOL_REPO_NAME = "adapt_authoring"
     var allRepos = [];
     var allPrs = [];
     var todaysPrs = [];
@@ -89,6 +90,22 @@ $(function(){
         }
     }
 
+    function getFrameworkPRs() {
+        var prs = [];
+        for(var i = 0, len = allPrs.length; i < len; i++) {
+            if(AUTHORING_TOOL_REPO_NAME !== allPrs[i].base.repo.name) prs.push(allPrs[i]);
+        }
+        return prs;
+    }
+
+    function getAuthoringToolPRs() {
+        var prs = [];
+        for(var i = 0, len = allPrs.length; i < len; i++) {
+            if(AUTHORING_TOOL_REPO_NAME === allPrs[i].base.repo.name) prs.push(allPrs[i]);
+        }
+        return prs;
+    }
+
     // rendering
 
     function storeTemplateData() {
@@ -98,8 +115,14 @@ $(function(){
 
     function render() {
         var remaining = allPrs.length;
-        if(remaining == 0) remaining = "no";
-        $(".outstanding_prs .number").html(remaining);
+        if(remaining == 0)  {
+            remaining = "no";
+            $(".outstanding_prs .breakdown").hide();
+        } else {
+            $(".outstanding_prs .breakdown .number.framework").html(getFrameworkPRs().length);
+            $(".outstanding_prs .breakdown .number.tool").html(getAuthoringToolPRs().length);
+        }
+        $(".outstanding_prs .number.total").html(remaining);
 
         $(".loading").addClass("hidden");
         $(".inner").fadeIn().removeClass("hidden");

@@ -128,13 +128,13 @@ $(function(){
         $(".inner").fadeIn().removeClass("hidden");
 
         var model = {};
-        if(showPrs) model.prs = allPrs;
-        if(showRepos) model.repos = allRepos;
-        if(todaysPrs.length > 0) model.today = todaysPrs;
+        if(showPrs) model.prs = getFrameworkPRs();
+        // if(showRepos) model.repos = allRepos;
+        // if(todaysPrs.length > 0) model.today = todaysPrs;
 
         var html = templateData(model);
         $(".content").append(html);
-        $(".prs.all").slideUp(1);
+        // $(".prs.all").slideUp(1);
 
         setupListeners();
     }
